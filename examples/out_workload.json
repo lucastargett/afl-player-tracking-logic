@@ -1,0 +1,276 @@
+{
+  "meta": {
+    "fps": 25.0,
+    "field": {
+      "length_m": 165.0,
+      "width_m": 135.0
+    },
+    "hsr_kmh": 18.0
+  },
+  "players": [
+    {
+      "player_id": 1,
+      "distance_m": 3.6008037292646944,
+      "hsr_m": 3.527948899259297,
+      "mean_speed_mps": 0.4835924957300241,
+      "max_speed_mps": 12.0,
+      "total_time_s": 7.36,
+      "work_rest_ratio": 0.045454545454545456,
+      "workload_score": 52.27272727272727,
+      "fatigue_risk": "Moderate"
+    },
+    {
+      "player_id": 2,
+      "distance_m": 0.0,
+      "hsr_m": 0.0,
+      "mean_speed_mps": 0.0,
+      "max_speed_mps": 0.0,
+      "total_time_s": 7.359999999999999,
+      "work_rest_ratio": 0.0,
+      "workload_score": 0.0,
+      "fatigue_risk": "Low"
+    },
+    {
+      "player_id": 3,
+      "distance_m": 0.0,
+      "hsr_m": 0.0,
+      "mean_speed_mps": 0.0,
+      "max_speed_mps": 0.0,
+      "total_time_s": 0.0,
+      "work_rest_ratio": 0.0,
+      "workload_score": 0.0,
+      "fatigue_risk": "Low"
+    },
+    {
+      "player_id": 4,
+      "distance_m": 0.0,
+      "hsr_m": 0.0,
+      "mean_speed_mps": 0.0,
+      "max_speed_mps": 0.0,
+      "total_time_s": 0.0,
+      "work_rest_ratio": 0.0,
+      "workload_score": 0.0,
+      "fatigue_risk": "Low"
+    },
+    {
+      "player_id": 5,
+      "distance_m": 0.43712898003238365,
+      "hsr_m": 0.43712898003238365,
+      "mean_speed_mps": 0.16070918383543517,
+      "max_speed_mps": 10.928224500809591,
+      "total_time_s": 3.04,
+      "work_rest_ratio": 0.013333333333333334,
+      "workload_score": 6.799221178293529,
+      "fatigue_risk": "Low"
+    },
+    {
+      "player_id": 34,
+      "distance_m": 0.3171447315064407,
+      "hsr_m": 0.3171447315064407,
+      "mean_speed_mps": 1.3214363812768362,
+      "max_speed_mps": 7.928618287661017,
+      "total_time_s": 0.24,
+      "work_rest_ratio": 0.2,
+      "workload_score": 14.449275712386832,
+      "fatigue_risk": "Low"
+    },
+    {
+      "player_id": 36,
+      "distance_m": 0.0,
+      "hsr_m": 0.0,
+      "mean_speed_mps": 0.0,
+      "max_speed_mps": 0.0,
+      "total_time_s": 1.44,
+      "work_rest_ratio": 0.0,
+      "workload_score": 0.0,
+      "fatigue_risk": "Low"
+    },
+    {
+      "player_id": 45,
+      "distance_m": 0.0,
+      "hsr_m": 0.0,
+      "mean_speed_mps": 0.0,
+      "max_speed_mps": 0.0,
+      "total_time_s": 0.0,
+      "work_rest_ratio": 0.0,
+      "workload_score": 0.0,
+      "fatigue_risk": "Low"
+    },
+    {
+      "player_id": 49,
+      "distance_m": 0.0,
+      "hsr_m": 0.0,
+      "mean_speed_mps": 0.0,
+      "max_speed_mps": 0.0,
+      "total_time_s": 0.12,
+      "work_rest_ratio": 0.0,
+      "workload_score": 0.0,
+      "fatigue_risk": "Low"
+    },
+    {
+      "player_id": 50,
+      "distance_m": 2.944625918272738,
+      "hsr_m": 2.871771088267341,
+      "mean_speed_mps": 0.558896447999756,
+      "max_speed_mps": 12.0,
+      "total_time_s": 5.48,
+      "work_rest_ratio": 0.06201550387596899,
+      "workload_score": 43.8951485274309,
+      "fatigue_risk": "Moderate"
+    },
+    {
+      "player_id": 55,
+      "distance_m": 0.0,
+      "hsr_m": 0.0,
+      "mean_speed_mps": 0.0,
+      "max_speed_mps": 0.0,
+      "total_time_s": 0.96,
+      "work_rest_ratio": 0.0,
+      "workload_score": 0.0,
+      "fatigue_risk": "Low"
+    },
+    {
+      "player_id": 62,
+      "distance_m": 2.542894679630992,
+      "hsr_m": 2.542894679630992,
+      "mean_speed_mps": 0.5827386397035661,
+      "max_speed_mps": 12.0,
+      "total_time_s": 4.36,
+      "work_rest_ratio": 0.06862745098039216,
+      "workload_score": 39.10606114781191,
+      "fatigue_risk": "Low"
+    },
+    {
+      "player_id": 63,
+      "distance_m": 0.0,
+      "hsr_m": 0.0,
+      "mean_speed_mps": 0.0,
+      "max_speed_mps": 0.0,
+      "total_time_s": 0.12,
+      "work_rest_ratio": 0.0,
+      "workload_score": 0.0,
+      "fatigue_risk": "Low"
+    },
+    {
+      "player_id": 64,
+      "distance_m": 0.0,
+      "hsr_m": 0.0,
+      "mean_speed_mps": 0.0,
+      "max_speed_mps": 0.0,
+      "total_time_s": 1.16,
+      "work_rest_ratio": 0.0,
+      "workload_score": 0.0,
+      "fatigue_risk": "Low"
+    },
+    {
+      "player_id": 69,
+      "distance_m": 0.0,
+      "hsr_m": 0.0,
+      "mean_speed_mps": 0.0,
+      "max_speed_mps": 0.0,
+      "total_time_s": 0.28,
+      "work_rest_ratio": 0.0,
+      "workload_score": 0.0,
+      "fatigue_risk": "Low"
+    },
+    {
+      "player_id": 70,
+      "distance_m": 0.0,
+      "hsr_m": 0.0,
+      "mean_speed_mps": 0.0,
+      "max_speed_mps": 0.0,
+      "total_time_s": 0.28,
+      "work_rest_ratio": 0.0,
+      "workload_score": 0.0,
+      "fatigue_risk": "Low"
+    },
+    {
+      "player_id": 72,
+      "distance_m": 0.0,
+      "hsr_m": 0.0,
+      "mean_speed_mps": 0.0,
+      "max_speed_mps": 0.0,
+      "total_time_s": 0.72,
+      "work_rest_ratio": 0.0,
+      "workload_score": 0.0,
+      "fatigue_risk": "Low"
+    },
+    {
+      "player_id": 73,
+      "distance_m": 0.0,
+      "hsr_m": 0.0,
+      "mean_speed_mps": 0.0,
+      "max_speed_mps": 0.0,
+      "total_time_s": 0.12,
+      "work_rest_ratio": 0.0,
+      "workload_score": 0.0,
+      "fatigue_risk": "Low"
+    },
+    {
+      "player_id": 78,
+      "distance_m": 0.0,
+      "hsr_m": 0.0,
+      "mean_speed_mps": 0.0,
+      "max_speed_mps": 0.0,
+      "total_time_s": 0.84,
+      "work_rest_ratio": 0.0,
+      "workload_score": 0.0,
+      "fatigue_risk": "Low"
+    },
+    {
+      "player_id": 79,
+      "distance_m": 3.3086559616147078,
+      "hsr_m": 3.090091471598523,
+      "mean_speed_mps": 1.4913396914334356,
+      "max_speed_mps": 12.0,
+      "total_time_s": 2.2,
+      "work_rest_ratio": 0.1702127659574468,
+      "workload_score": 53.37951105499506,
+      "fatigue_risk": "Moderate"
+    },
+    {
+      "player_id": 86,
+      "distance_m": 0.24107710526172857,
+      "hsr_m": 0.24107710526172857,
+      "mean_speed_mps": 0.8609896616490306,
+      "max_speed_mps": 6.026927631543214,
+      "total_time_s": 0.28,
+      "work_rest_ratio": 0.16666666666666666,
+      "workload_score": 11.71544377911808,
+      "fatigue_risk": "Low"
+    },
+    {
+      "player_id": 87,
+      "distance_m": 0.0,
+      "hsr_m": 0.0,
+      "mean_speed_mps": 0.0,
+      "max_speed_mps": 0.0,
+      "total_time_s": 0.2,
+      "work_rest_ratio": 0.0,
+      "workload_score": 0.0,
+      "fatigue_risk": "Low"
+    },
+    {
+      "player_id": 88,
+      "distance_m": 0.0,
+      "hsr_m": 0.0,
+      "mean_speed_mps": 0.0,
+      "max_speed_mps": 0.0,
+      "total_time_s": 0.28,
+      "work_rest_ratio": 0.0,
+      "workload_score": 0.0,
+      "fatigue_risk": "Low"
+    },
+    {
+      "player_id": 98,
+      "distance_m": 0.0,
+      "hsr_m": 0.0,
+      "mean_speed_mps": 0.0,
+      "max_speed_mps": 0.0,
+      "total_time_s": 0.0,
+      "work_rest_ratio": 0.0,
+      "workload_score": 0.0,
+      "fatigue_risk": "Low"
+    }
+  ]
+}
