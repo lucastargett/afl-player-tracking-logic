@@ -32,7 +32,7 @@ weights:
 risk_bands:
   - {max: 40, label: "Low"}
   - {max: 70, label: "Moderate"}
-  - {max: 999, label: "High"}
+  - {max: 100, label: "High"}
 
 # Quarter segmentation (seconds from game start)
 quarters:

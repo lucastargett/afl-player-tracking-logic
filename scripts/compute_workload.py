@@ -2,10 +2,10 @@
 import argparse, json
 import numpy as np
 import pandas as pd
-import yaml
-from typing import Dict, List, Any
+import yaml                             # Allows loading of config.yaml
+from typing import Dict, List, Any      # typing for readbility          
 
-def _minmax(series: pd.Series) -> np.ndarray:
+def _minmax(series: pd.Series) -> np.ndarray:   # Scales 0-1 (handles NaN)
     x = series.to_numpy(dtype=float)
     if x.size == 0:
         return x
@@ -14,7 +14,7 @@ def _minmax(series: pd.Series) -> np.ndarray:
     denom = (hi - lo) if (hi - lo) > 0 else 1.0
     return (x - lo) / denom
 
-def _get(cfg: Dict, path: str, default):
+def _get(cfg: Dict, path: str, default):        # Allows _get(cfg: "thresholds.hsr_kmh", 18.0) without error
     cur = cfg
     for key in path.split("."):
         if isinstance(cur, dict) and key in cur:
@@ -23,59 +23,54 @@ def _get(cfg: Dict, path: str, default):
             return default
     return cur
 
-def _clean_float(v) -> float:
+def _clean_float(v) -> float:                   # Cleaner: turns NaN into 0.0
     try:
         fv = float(v)
         return fv if np.isfinite(fv) else 0.0
     except Exception:
         return 0.0
 
-def _band_label(s: float, bands: List[Dict[str, Any]]) -> str:
+def _band_label(s: float, bands: List[Dict[str, Any]]) -> str:  # Talks with config.yaml file, converts 0-100 score into low, moderate or high
     for b in bands:
         if s <= float(b["max"]):
             return str(b["label"])
     return str(bands[-1]["label"])
 
-def _ensure_timestamps_and_quarters(df: pd.DataFrame, fps: float, edges_s: list[int|float]) -> pd.DataFrame:
+def _ensure_timestamps_and_quarters(df: pd.DataFrame, fps: float, edges_s: list[int|float]) -> pd.DataFrame:   # Safety net for time and quart labels
     """
     Ensures df has a reliable 'timestamp_s' and a 'quarter' column.
-    - If timestamp_s is missing or non-monotonic per player, synthesise from frame_id/fps.
+    - If timestamp_s is missing not possible time jumps, synthesise from frame_id/fps.
     - Assign quarters by edges_s; if still impossible, fall back to Q1.
     """
     df = df.copy()
 
-    def _is_mono_increasing(x: pd.Series) -> bool:
-        # allow tiny jitter; treat NaNs as bad
+    def _is_mono_increasing(x: pd.Series) -> bool:  # Ensures timestamp_s increases over time for each player
         if x.isna().any(): 
             return False
         d = x.diff().dropna()
         if d.empty:
             return False
-        # require 95% of diffs >= 0 (some feeds can duplicate frames)
-        return (d >= -1e-6).mean() >= 0.95
+        return (d >= -1e-6).mean() >= 0.95  # Allows tiny negative time diff 
 
-    use_estimated = False
-    has_ts = "timestamp_s" in df.columns
-
+    use_estimated = False                   # Decides whether to estimate timestamps 
+    has_ts = "timestamp_s" in df.columns    
     if not has_ts:
-        use_estimated = True
-    else:
-        # check monotonicity per player
+        use_estimated = True                # If no timestamp; create one from frame number
+    else:                                   # Loop through each player's data, check if it is monotonically increasing (always going foward)
         ok = True
         for _, g in df.groupby("player_id", sort=False):
             if not _is_mono_increasing(g["timestamp_s"]):
                 ok = False
                 break
-        if not ok:
+        if not ok:                          # If not always monotonically increasing ignore timestamp and create new one
             use_estimated = True
 
-    if use_estimated:
-        # Synthesize timestamps from frame_id per player (start at 0s for each player)
+    if use_estimated:                       # Runs through this if we decide from above that a timestamp is missing or unreliable
         df["timestamp_s"] = (
             (df["frame_id"] - df.groupby("player_id")["frame_id"].transform("min")) / float(max(fps, 1e-9))
         )
 
-    # Assign quarters using edges_s
+    # Assigns quarters using edges_s from config.yaml
     try:
         bins = [-np.inf] + list(edges_s) + [np.inf]
         df["quarter"] = pd.cut(df["timestamp_s"], bins=bins, labels=[1,2,3,4]).astype(int)
@@ -85,7 +80,7 @@ def _ensure_timestamps_and_quarters(df: pd.DataFrame, fps: float, edges_s: list[
 
     return df, ("estimated" if use_estimated else "provided")
 
-def main():
+def main():     # Script input and output paths
     ap = argparse.ArgumentParser(description="Compute AFL workload metrics (game total + per quarter).")
     ap.add_argument("--tracking", required=True, help="Path to tracking.csv")
     ap.add_argument("--config", default="config.yaml", help="Path to config.yaml")
@@ -93,55 +88,51 @@ def main():
     ap.add_argument("--out-csv", default="", help="(Optional) Output CSV path for game totals")
     args = ap.parse_args()
 
-    # --- Config ---
+    # - Config - Loads configuration from config.yaml
     cfg = yaml.safe_load(open(args.config))
-    fps = float(_get(cfg, "fps", 25.0))
-    L   = float(_get(cfg, "field.length_m", 165.0))
-    W   = float(_get(cfg, "field.width_m", 135.0))
-    hsr_kmh = float(_get(cfg, "thresholds.hsr_kmh", 18.0))
-    vmax_ms = float(_get(cfg, "thresholds.vmax_ms", 12.0))  # optional
-    weights = _get(cfg, "weights", {"distance":0.5, "hsr":0.4, "work_rest":0.1})
-    risk_bands = _get(cfg, "risk_bands", [
-        {"max": 40, "label": "Low"},
-        {"max": 70, "label": "Moderate"},
-        {"max": 999, "label": "High"},
-    ])
+    fps = float(_get(cfg, "fps"))
+    L   = float(_get(cfg, "field.length_m"))
+    W   = float(_get(cfg, "field.width_m"))
+    hsr_kmh = float(_get(cfg, "thresholds.hsr_kmh"))
+    vmax_ms = float(_get(cfg, "thresholds.vmax_ms"))
+    weights = _get(cfg, "weights")
+    risk_bands = _get(cfg, "risk_bands")
 
-    # Quarter edges in seconds from game start (20 min quarters by default)
+    # Quarter start and finish in seconds (20min qtrs)
     quarter_edges_s = _get(cfg, "quarters.edges_s", [1200, 2400, 3600])
 
-    # --- Load tracking ---
+    # - Load tracking data
     df = pd.read_csv(args.tracking).sort_values(["player_id", "frame_id"]).reset_index(drop=True)
     required = {"frame_id", "player_id", "cx", "cy"}
     missing = required - set(df.columns)
     if missing:
         raise ValueError(f"Missing required columns: {missing}")
 
-    # --- Scale pixels → metres (simple affine by extents) ---
+    # - Scale pixels to metres
     sx = W / max(df["cx"].max() - df["cx"].min(), 1e-9)
     sy = L / max(df["cy"].max() - df["cy"].min(), 1e-9)
     df["cx_m"] = (df["cx"] - df["cx"].min()) * sx
     df["cy_m"] = (df["cy"] - df["cy"].min()) * sy
 
-    # --- Per-step distance with clamp (anti-teleport) ---
-    dx = df.groupby("player_id")["cx_m"].diff()
-    dy = df.groupby("player_id")["cy_m"].diff()
-    step = np.hypot(dx, dy)
-    df["step_dist_m"] = np.where(np.isfinite(step) & (step <= 0.5), step, 0.0).astype(float)
+    # - Per-step distance with clamp (anti-teleport)
+    dx = df.groupby("player_id")["cx_m"].diff()             # X- axis diff between one player_id frame to the next
+    dy = df.groupby("player_id")["cy_m"].diff()             # Y- axis
+    step = np.hypot(dx, dy)                                 # Euclidean distance (total) between frames
+    df["step_dist_m"] = np.where(np.isfinite(step) & (step <= 0.5), step, 0.0).astype(float)    # If value is not NaN or 12.5 m/s keep (0.5 x 25 fps = 12.5)
 
-    # --- dt & speed ---
+    # - delta time (dt, time difference between each frame) & speed 
     dt = df.groupby("player_id")["frame_id"].diff() / fps
-    df["dt_s"] = np.where((dt > 0) & np.isfinite(dt), dt, 0.0).astype(float)
-    speed_mps = np.where(df["dt_s"] > 0, df["step_dist_m"] / df["dt_s"], np.nan)
-    df["speed_mps"] = np.clip(speed_mps, 0.0, vmax_ms)
-    kmh = (df["speed_mps"] * 3.6).astype(float)
+    df["dt_s"] = np.where((dt > 0) & np.isfinite(dt), dt, 0.0).astype(float)        # Keeps legitate scores sets duplicate or NaN to 0.0
+    speed_mps = np.where(df["dt_s"] > 0, df["step_dist_m"] / df["dt_s"], np.nan)    # Speed = distance / time
+    df["speed_mps"] = np.clip(speed_mps, 0.0, vmax_ms)                              # Clips speed 0 - 12 m/s
+    kmh = (df["speed_mps"] * 3.6).astype(float)                                     # Convert to km/h
 
-    # --- Sprint detection (events) ---
-    sprint_kmh = float(_get(cfg, "thresholds.sprint_kmh", 24.0))
-    min_sprint_dur_s = float(_get(cfg, "thresholds.min_sprint_dur_s", 1.0))
-    rs_window_s = float(_get(cfg, "thresholds.repeat_sprint_window_s", 60.0))
+    # - Sprint detection (events) 
+    sprint_kmh = float(_get(cfg, "thresholds.sprint_kmh"))                          # Reads config.yaml grabbing sprint speed threshold
+    min_sprint_dur_s = float(_get(cfg, "thresholds.min_sprint_dur_s"))              # Classifies min sprint duration 
+    rs_window_s = float(_get(cfg, "thresholds.repeat_sprint_window_s"))             # If multiple sprints completed in window, is considered a bout
 
-    df["is_sprint"] = kmh >= sprint_kmh
+    df["is_sprint"] = kmh >= sprint_kmh                                             # Boolean checks if player performed a sprint
 
     # Run-length encode per player to get sprint segments
     def _sprint_segments(g: pd.DataFrame):
@@ -182,7 +173,7 @@ def main():
         .reset_index(drop=True)
     )
 
-    # --- Repeated Sprint Bouts (clusters of sprints within rs_window_s) ---
+    # - Repeated Sprint Bouts (clusters of sprints within rs_window_s)
     def _count_repeated_bouts(agg: pd.DataFrame) -> pd.DataFrame:
         if agg.empty:
             return pd.DataFrame({"player_id": [], "num_sprints": [], "repeated_sprint_bouts": []})
@@ -212,13 +203,13 @@ def main():
 
     sprint_summary = _count_repeated_bouts(sprint_segments)
 
-    # --- HSR metres ---
+    # - HSR metres
     df["hsr_m"] = np.where(kmh >= hsr_kmh, df["step_dist_m"], 0.0).astype(float)
 
-    # --- Quarter segmentation (robust) ---
+    # - Quarter segmentation (robust)
     df, ts_mode = _ensure_timestamps_and_quarters(df, fps=fps, edges_s=quarter_edges_s) 
 
-    # --- GAME TOTAL (per player) ---
+    # - GAME TOTAL (per player)
     high_time_s = np.where(kmh >= hsr_kmh, df["dt_s"], 0.0)
     per_player_high_s = pd.Series(high_time_s).groupby(df["player_id"]).sum()
     per_player_total_s = df.groupby("player_id")["dt_s"].sum()
@@ -261,7 +252,7 @@ def main():
     g["workload_score"] = score_game
     g["fatigue_risk"] = g["workload_score"].apply(lambda s: _band_label(s, risk_bands))
 
-    # --- PER QUARTER (per player, per quarter) ---
+    # - PER QUARTER (per player, per quarter)
     # Aggregations
     gq = (df.groupby(["player_id","quarter"])
             .agg(distance_m=("step_dist_m","sum"),
@@ -286,11 +277,11 @@ def main():
     gq["workload_score"] = score_q
     gq["fatigue_risk"] = gq["workload_score"].apply(lambda s: _band_label(s, risk_bands))
 
-    # Optional CSV of game totals
+    # CSV of game totals
     if args.out_csv:
         g.to_csv(args.out_csv, index=False)
 
-    # --- Build JSON payload with quarters nested under each player ---
+    # - Build JSON payload with quarters nested under each player 
     players_payload = []
     for pid, row in g.set_index("player_id").iterrows():
         # quarters for this player
