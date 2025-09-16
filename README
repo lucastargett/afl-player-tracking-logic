@@ -5,7 +5,7 @@ It processes coordinate-based tracking files (`tracking.csv`) and delivers outpu
 
 ---
 
-## 📂 Project structure
+## Project structure
 
 afl-workload-pipeline/
 ├─ config.yaml                 # thresholds & settings (edit here, no code changes needed)
@@ -21,7 +21,7 @@ afl-workload-pipeline/
 ├─ heatmaps/                   # heatmap logic (grid, blur, render)
 └─ tests/                      # unit tests
 
-## ⚙️ Setup
+## Setup
 
 Clone and set up environment:
 
