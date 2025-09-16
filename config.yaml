@@ -17,6 +17,7 @@ thresholds:
   sprint_kmh: 24.0    # sprint threshold (optional future use)
   accel_ms2: 3.0      # high acceleration threshold (m/s²)
   decel_ms2: -3.0     # high deceleration threshold (m/s²)
+  min_sprint_dur_s: 1.0        # sprint must last at lease this long
   repeat_sprint_window_s: 60   # time window for repeated sprints (seconds)
 
 # Weights for workload score calculation
@@ -32,6 +33,11 @@ risk_bands:
   - {max: 40, label: "Low"}
   - {max: 70, label: "Moderate"}
   - {max: 999, label: "High"}
+
+# Quarter segmentation (seconds from game start)
+quarters:
+  # Default: standard 20-min quarters → edges at 1200s, 2400s, 3600s
+  edges_s: [1200, 2400, 3600]
 
 # Heatmap rendering parameters
 heatmap:
