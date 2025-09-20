@@ -82,7 +82,11 @@ def _ensure_timestamps_and_quarters(df: pd.DataFrame, fps: float, edges_s: list[
 
 def main():     # Script input and output paths
     ap = argparse.ArgumentParser(description="Compute AFL workload metrics (game total + per quarter).")
-    ap.add_argument("--tracking", required=True, help="Path to tracking.csv")
+    ap.add_argument(
+        "--tracking",
+        default="examples/tracking2.0.csv",
+        help="Path to tracking2.0.csv (default: examples/tracking2.0.csv)"
+    )
     ap.add_argument("--config", default="config.yaml", help="Path to config.yaml")
     ap.add_argument("--out-json", required=True, help="Output JSON path")
     ap.add_argument("--out-csv", default="", help="(Optional) Output CSV path for game totals")

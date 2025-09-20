@@ -10,7 +10,7 @@ It processes coordinate-based tracking files (`tracking.csv`) and delivers outpu
 afl-workload-pipeline/
 ├─ config.yaml                 # thresholds & settings (edit here, no code changes needed)
 ├─ examples/
-│  ├─ tracking.csv             # sample input (~200 frames)
+│  ├─ tracking2.0.csv          # sample input (~200 frames)
 │  ├─ out_workload.json        # sample workload output
 │  ├─ out_workload.csv         # same data in CSV format
 │  └─ heatmaps/                # sample generated PNGs
@@ -35,7 +35,7 @@ source .venv/bin/activate
 pip install -r requirements.txt   # or: pip install pandas numpy pyyaml scipy matplotlib imageio
 
 python scripts/compute_workload.py \
-  --tracking examples/tracking.csv \
+  --tracking examples/tracking2.0.csv \
   --config config.yaml \
   --out-json examples/out_workload.json \
   --out-csv  examples/out_workload.csv
@@ -45,7 +45,7 @@ Outputs:
 	•	CSV: tidy table for spreadsheets / BI tools.
 
 python scripts/generate_heatmaps.py \
-  --tracking examples/tracking.csv \
+  --tracking examples/tracking2.0.csv \
   --config config.yaml \
   --out-dir examples/heatmaps \
   --group-by player_id

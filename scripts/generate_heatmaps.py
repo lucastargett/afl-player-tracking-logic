@@ -9,7 +9,11 @@ from heatmaps import pipeline, render
 
 def main():
     ap = argparse.ArgumentParser(description="Generate heatmaps from tracking data.")
-    ap.add_argument("--tracking", required=True, help="Path to tracking.csv")
+    ap.add_argument(
+        "--tracking",
+        default="examples/tracking2.0.csv",
+        help="Path to tracking2.0.csv (default: examples/tracking2.0.csv)"
+    )
     ap.add_argument("--config", default="config.yaml", help="Path to config.yaml")
     ap.add_argument("--out-dir", required=True, help="Directory for saving heatmaps")
     ap.add_argument("--group-by", default="player_id", help="Column to group by (e.g. player_id or team_id)")
