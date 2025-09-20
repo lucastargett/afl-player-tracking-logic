@@ -1,7 +1,7 @@
 # AFL Workload & Heatmap Pipeline
 
 This repo provides **workload metrics** and **heatmap visualisations** from AFL player tracking data.  
-It processes coordinate-based tracking files (`tracking.csv`) and delivers outputs consumable by the frontend.
+It processes coordinate-based tracking files (`tracking2.0.csv`) and delivers outputs consumable by the frontend.
 
 ---
 
