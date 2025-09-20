@@ -94,13 +94,22 @@ def main():     # Script input and output paths
 
     # - Config - Loads configuration from config.yaml
     cfg = yaml.safe_load(open(args.config))
-    fps = float(_get(cfg, "fps"))
-    L   = float(_get(cfg, "field.length_m"))
-    W   = float(_get(cfg, "field.width_m"))
-    hsr_kmh = float(_get(cfg, "thresholds.hsr_kmh"))
-    vmax_ms = float(_get(cfg, "thresholds.vmax_ms"))
-    weights = _get(cfg, "weights")
-    risk_bands = _get(cfg, "risk_bands")
+    fps = float(_get(cfg, "fps", 25.0))                     # frames per second
+    L   = float(_get(cfg, "field.length_m", 165.0))         # AFL oval length (m)
+    W   = float(_get(cfg, "field.width_m", 135.0))          # AFL oval width (m)
+    hsr_kmh = float(_get(cfg, "thresholds.hsr_kmh", 15.0))  # High-speed running threshold (km/h)
+    vmax_ms = float(_get(cfg, "thresholds.vmax_ms", 12.0))  # Max plausible speed clamp (m/s)
+    weights = _get(cfg, "weights", {                        # scoring weights
+        "distance": 0.3,
+        "hsr": 0.4,
+        "work_rest": 0.3,
+        "repeat_sprints": 0.2,
+    })
+    risk_bands = _get(cfg, "risk_bands", [                  # default risk bands
+        {"max": 33, "label": "low"},
+        {"max": 66, "label": "moderate"},
+        {"max": 100, "label": "high"},
+    ])
 
     # Quarter start and finish in seconds (20min qtrs)
     quarter_edges_s = _get(cfg, "quarters.edges_s", [1200, 2400, 3600])
@@ -132,9 +141,9 @@ def main():     # Script input and output paths
     kmh = (df["speed_mps"] * 3.6).astype(float)                                     # Convert to km/h
 
     # - Sprint detection (events) 
-    sprint_kmh = float(_get(cfg, "thresholds.sprint_kmh"))                          # Reads config.yaml grabbing sprint speed threshold
-    min_sprint_dur_s = float(_get(cfg, "thresholds.min_sprint_dur_s"))              # Classifies min sprint duration 
-    rs_window_s = float(_get(cfg, "thresholds.repeat_sprint_window_s"))             # If multiple sprints completed in window, is considered a bout
+    sprint_kmh = float(_get(cfg, "thresholds.sprint_kmh", 20.0))         # sprint threshold (km/h)
+    min_sprint_dur_s = float(_get(cfg, "thresholds.min_sprint_dur_s", 1.0))  # min sprint duration (s)
+    rs_window_s = float(_get(cfg, "thresholds.repeat_sprint_window_s", 30.0)) # repeated-sprint window (s)
 
     df["is_sprint"] = kmh >= sprint_kmh                                             # Boolean checks if player performed a sprint
 
